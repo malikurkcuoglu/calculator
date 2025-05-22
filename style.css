@@ -1,0 +1,77 @@
+html {
+  box-sizing: border-box;
+}
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: wheat;
+}
+.calculator {
+  display: flex;
+  max-width: 400px;
+  flex-direction: column;
+}
+.buttons {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  background-color: black;
+  padding: 30px 20px;
+  gap: 8px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.row {
+  display: flex;
+  max-width: 100%;
+  gap: 8px;
+}
+.row:first-child {
+  justify-content: space-between;
+}
+button {
+  border: none;
+  border-radius: 50%;
+  flex: 0 0 80px;
+  height: 80px;
+  background-color: #333;
+  color: whitesmoke;
+  font-size: 20px;
+}
+button:hover {
+  background-color: #555;
+  cursor: pointer;
+}
+button:active {
+  font-size: 16px;
+}
+.display {
+  max-width: 100%;
+  font-size: 40px;
+  background-color: black;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  color: whitesmoke;
+}
+.text {
+  min-height: 100px;
+  max-width: 100%;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.line {
+  width: 80%;
+  border-bottom: 3px solid #555;
+  margin: 0 auto;
+}
