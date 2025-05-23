@@ -36,6 +36,17 @@ const enterDigit = function (e) {
   }
 };
 
+const enterDigitKey = function (e) {
+  if (!isClear) {
+    display.textContent = "";
+    isClear = true;
+  }
+  if (display.textContent.length < 17) {
+    display.textContent += e;
+    displayNum = display.textContent;
+  }
+};
+
 const add = function (a, b) {
   return a + b;
 };
@@ -103,6 +114,40 @@ const pickOperator = function (e) {
   }
 };
 
+const pickOperatorKey = function (e) {
+  if (isPressed) {
+    if (displayNum) {
+      num2 = displayNum;
+      let result =
+        operate(num1, num2, operator).toString().length < 12
+          ? operate(num1, num2, operator)
+          : operate(num1, num2, operator).toPrecision(12);
+      num1 = result;
+      operator = e;
+      secondText.textContent = `${result} ${operator}`;
+      display.textContent = "";
+      num2 = null;
+      displayNum = null;
+    } else {
+      operator = e;
+      secondText.textContent = `${num1} ${operator}`;
+      display.textContent = "";
+    }
+  } else {
+    if (displayNum) {
+      num1 = displayNum;
+      display.textContent = "";
+      operator = e;
+      secondText.textContent = `${num1} ${operator}`;
+      isPressed = true;
+      displayNum = null;
+    }
+  }
+  if (!display.textContent.includes(".")) {
+    period.classList.remove("unavailable");
+  }
+};
+
 const getResult = function () {
   if (operator) {
     if (displayNum === null || displayNum === undefined) {
@@ -152,3 +197,38 @@ equals.addEventListener("click", getResult);
 clear.addEventListener("click", clearDisplay);
 period.addEventListener("click", decimalSeperator);
 backspace.addEventListener("click", undo);
+
+window.addEventListener("keydown", (e) => {
+  switch (e.key) {
+    case "1":
+    case "2":
+    case "3":
+    case "4":
+    case "5":
+    case "6":
+    case "7":
+    case "8":
+    case "9":
+    case "0":
+      enterDigitKey(e.key);
+      break;
+    case ".":
+      decimalSeperator();
+      break;
+    case "Enter":
+      getResult();
+      break;
+    case "Delete":
+      clearDisplay();
+      break;
+    case "+":
+    case "-":
+    case "*":
+    case "/":
+      pickOperatorKey(e.key);
+      break;
+    case "Backspace":
+      undo();
+      break;
+  }
+});
