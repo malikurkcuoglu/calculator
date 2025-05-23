@@ -5,6 +5,7 @@ const digits = document.querySelectorAll(".digit");
 const operators = document.querySelectorAll(".operator");
 const equals = document.querySelector(".equals");
 const clear = document.querySelector(".clear");
+const period = document.querySelector(".period");
 let isPressed = false;
 let isClear = true;
 
@@ -84,6 +85,9 @@ operators.forEach((op) =>
         displayNum = null;
       }
     }
+    if (!display.textContent.includes(".")) {
+      period.classList.remove("unavailable");
+    }
   })
 );
 equals.addEventListener("click", () => {
@@ -111,6 +115,11 @@ equals.addEventListener("click", () => {
       operator = "";
     }
   }
+  if (!display.textContent.includes(".")) {
+    period.classList.remove("unavailable");
+  } else {
+    period.classList.add("unavailable");
+  }
 });
 clear.addEventListener("click", () => {
   num1 = null;
@@ -120,4 +129,12 @@ clear.addEventListener("click", () => {
   display.textContent = "";
   secondText.textContent = "";
   operator = "";
+  period.classList.remove("unavailable");
+});
+period.addEventListener("click", () => {
+  if (!display.textContent.includes(".")) {
+    period.classList.add("unavailable");
+    if (!isClear) isClear = true;
+    display.textContent += display.textContent === "" ? "0." : ".";
+  }
 });

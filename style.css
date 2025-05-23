@@ -84,3 +84,6 @@ button:active {
   border-bottom: 3px solid #555;
   margin: 0 auto;
 }
+.unavailable {
+  background-color: #999;
+}
