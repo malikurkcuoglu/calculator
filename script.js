@@ -6,6 +6,7 @@ const operators = document.querySelectorAll(".operator");
 const equals = document.querySelector(".equals");
 const clear = document.querySelector(".clear");
 const period = document.querySelector(".period");
+let backspace = document.querySelector(".backspace");
 let isPressed = false;
 let isClear = true;
 
@@ -136,5 +137,11 @@ period.addEventListener("click", () => {
     period.classList.add("unavailable");
     if (!isClear) isClear = true;
     display.textContent += display.textContent === "" ? "0." : ".";
+  }
+});
+backspace.addEventListener("click", () => {
+  if (display.textContent) {
+    display.textContent = display.textContent.slice(0, -1);
+    displayNum = display.textContent;
   }
 });
