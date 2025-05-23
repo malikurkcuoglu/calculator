@@ -6,9 +6,14 @@ const operators = document.querySelectorAll(".operator");
 const equals = document.querySelector(".equals");
 const clear = document.querySelector(".clear");
 let isPressed = false;
+let isClear = true;
 
 digits.forEach((digit) =>
   digit.addEventListener("click", (e) => {
+    if (!isClear) {
+      display.textContent = "";
+      isClear = true;
+    }
     display.textContent += e.target.textContent;
     displayNum = display.textContent;
   })
@@ -50,32 +55,57 @@ const operate = function (a, b, op) {
 operators.forEach((op) =>
   op.addEventListener("click", (e) => {
     if (isPressed) {
-      num2 = displayNum;
-      let result = operate(num1, num2, operator);
-      num1 = result;
-      operator = e.target.textContent === "X" ? "*" : e.target.textContent;
-      secondText.textContent = `${result}${operator}`;
-      display.textContent = "";
-      num2 = null;
+      if (displayNum) {
+        num2 = displayNum;
+        let result = operate(num1, num2, operator);
+        num1 = result;
+        operator = e.target.textContent === "X" ? "*" : e.target.textContent;
+        secondText.textContent = `${result}${operator}`;
+        display.textContent = "";
+        num2 = null;
+        displayNum = null;
+      } else {
+        operator = e.target.textContent === "X" ? "*" : e.target.textContent;
+        secondText.textContent = `${num1}${operator}`;
+        display.textContent = "";
+      }
     } else {
-      num1 = displayNum;
-      display.textContent = "";
-      operator = e.target.textContent === "X" ? "*" : e.target.textContent;
-      secondText.textContent = `${num1} ${operator}`;
-      isPressed = true;
+      if (displayNum) {
+        num1 = displayNum;
+        display.textContent = "";
+        operator = e.target.textContent === "X" ? "*" : e.target.textContent;
+        secondText.textContent = `${num1} ${operator}`;
+        isPressed = true;
+        displayNum = null;
+      }
     }
   })
 );
 equals.addEventListener("click", () => {
-  isPressed = false;
-  num2 = displayNum;
-  secondText.textContent = "";
-  display.textContent = operate(num1, num2, operator);
+  if (operator) {
+    if (displayNum === null || displayNum === undefined) {
+      isPressed = false;
+      secondText.textContent = "";
+      displayNum = num1;
+      display.textContent = num1;
+      isClear = false;
+      operator = "";
+    } else {
+      isPressed = false;
+      num2 = displayNum;
+      secondText.textContent = "";
+      display.textContent = operate(num1, num2, operator);
+      displayNum = operate(num1, num2, operator);
+      isClear = false;
+      operator = "";
+    }
+  }
 });
 clear.addEventListener("click", () => {
   num1 = null;
   num2 = null;
   isPressed = false;
+  isClear = true;
   display.textContent = "";
   secondText.textContent = "";
   operator = "";
