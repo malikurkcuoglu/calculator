@@ -10,18 +10,31 @@ let backspace = document.querySelector(".backspace");
 let isPressed = false;
 let isClear = true;
 
-digits.forEach((digit) =>
-  digit.addEventListener("click", (e) => {
-    if (!isClear) {
-      display.textContent = "";
-      isClear = true;
-    }
-    if (display.textContent.length < 17) {
-      display.textContent += e.target.textContent;
-      displayNum = display.textContent;
-    }
-  })
-);
+const undo = function () {
+  if (display.textContent) {
+    display.textContent = display.textContent.slice(0, -1);
+    displayNum = display.textContent;
+  }
+};
+
+const decimalSeperator = function () {
+  if (!display.textContent.includes(".")) {
+    period.classList.add("unavailable");
+    if (!isClear) isClear = true;
+    display.textContent += display.textContent === "" ? "0." : ".";
+  }
+};
+
+const enterDigit = function (e) {
+  if (!isClear) {
+    display.textContent = "";
+    isClear = true;
+  }
+  if (display.textContent.length < 17) {
+    display.textContent += e.target.textContent;
+    displayNum = display.textContent;
+  }
+};
 
 const add = function (a, b) {
   return a + b;
@@ -56,42 +69,41 @@ const operate = function (a, b, op) {
   }
 };
 
-operators.forEach((op) =>
-  op.addEventListener("click", (e) => {
-    if (isPressed) {
-      if (displayNum) {
-        num2 = displayNum;
-        let result =
-          operate(num1, num2, operator).toString().length < 12
-            ? operate(num1, num2, operator)
-            : operate(num1, num2, operator).toPrecision(12);
-        num1 = result;
-        operator = e.target.textContent === "X" ? "*" : e.target.textContent;
-        secondText.textContent = `${result} ${operator}`;
-        display.textContent = "";
-        num2 = null;
-        displayNum = null;
-      } else {
-        operator = e.target.textContent === "X" ? "*" : e.target.textContent;
-        secondText.textContent = `${num1} ${operator}`;
-        display.textContent = "";
-      }
+const pickOperator = function (e) {
+  if (isPressed) {
+    if (displayNum) {
+      num2 = displayNum;
+      let result =
+        operate(num1, num2, operator).toString().length < 12
+          ? operate(num1, num2, operator)
+          : operate(num1, num2, operator).toPrecision(12);
+      num1 = result;
+      operator = e.target.textContent === "X" ? "*" : e.target.textContent;
+      secondText.textContent = `${result} ${operator}`;
+      display.textContent = "";
+      num2 = null;
+      displayNum = null;
     } else {
-      if (displayNum) {
-        num1 = displayNum;
-        display.textContent = "";
-        operator = e.target.textContent === "X" ? "*" : e.target.textContent;
-        secondText.textContent = `${num1} ${operator}`;
-        isPressed = true;
-        displayNum = null;
-      }
+      operator = e.target.textContent === "X" ? "*" : e.target.textContent;
+      secondText.textContent = `${num1} ${operator}`;
+      display.textContent = "";
     }
-    if (!display.textContent.includes(".")) {
-      period.classList.remove("unavailable");
+  } else {
+    if (displayNum) {
+      num1 = displayNum;
+      display.textContent = "";
+      operator = e.target.textContent === "X" ? "*" : e.target.textContent;
+      secondText.textContent = `${num1} ${operator}`;
+      isPressed = true;
+      displayNum = null;
     }
-  })
-);
-equals.addEventListener("click", () => {
+  }
+  if (!display.textContent.includes(".")) {
+    period.classList.remove("unavailable");
+  }
+};
+
+const getResult = function () {
   if (operator) {
     if (displayNum === null || displayNum === undefined) {
       isPressed = false;
@@ -121,8 +133,9 @@ equals.addEventListener("click", () => {
   } else {
     period.classList.add("unavailable");
   }
-});
-clear.addEventListener("click", () => {
+};
+
+const clearDisplay = function () {
   num1 = null;
   num2 = null;
   isPressed = false;
@@ -131,17 +144,11 @@ clear.addEventListener("click", () => {
   secondText.textContent = "";
   operator = "";
   period.classList.remove("unavailable");
-});
-period.addEventListener("click", () => {
-  if (!display.textContent.includes(".")) {
-    period.classList.add("unavailable");
-    if (!isClear) isClear = true;
-    display.textContent += display.textContent === "" ? "0." : ".";
-  }
-});
-backspace.addEventListener("click", () => {
-  if (display.textContent) {
-    display.textContent = display.textContent.slice(0, -1);
-    displayNum = display.textContent;
-  }
-});
+};
+
+digits.forEach((digit) => digit.addEventListener("click", enterDigit));
+operators.forEach((op) => op.addEventListener("click", pickOperator));
+equals.addEventListener("click", getResult);
+clear.addEventListener("click", clearDisplay);
+period.addEventListener("click", decimalSeperator);
+backspace.addEventListener("click", undo);
