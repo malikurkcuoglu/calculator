@@ -14,8 +14,10 @@ digits.forEach((digit) =>
       display.textContent = "";
       isClear = true;
     }
-    display.textContent += e.target.textContent;
-    displayNum = display.textContent;
+    if (display.textContent.length < 17) {
+      display.textContent += e.target.textContent;
+      displayNum = display.textContent;
+    }
   })
 );
 
@@ -38,16 +40,16 @@ const divide = function (a, b) {
 const operate = function (a, b, op) {
   switch (op) {
     case "+":
-      return add(Number(a), Number(b));
+      return add(parseFloat(a), parseFloat(b));
       break;
     case "-":
-      return subtract(Number(a), Number(b));
+      return subtract(parseFloat(a), parseFloat(b));
       break;
     case "/":
-      return divide(Number(a), Number(b));
+      return divide(parseFloat(a), parseFloat(b));
       break;
     case "*":
-      return multiply(Number(a), Number(b));
+      return multiply(parseFloat(a), parseFloat(b));
       break;
   }
 };
@@ -57,16 +59,19 @@ operators.forEach((op) =>
     if (isPressed) {
       if (displayNum) {
         num2 = displayNum;
-        let result = operate(num1, num2, operator);
+        let result =
+          operate(num1, num2, operator).toString().length < 12
+            ? operate(num1, num2, operator)
+            : operate(num1, num2, operator).toPrecision(12);
         num1 = result;
         operator = e.target.textContent === "X" ? "*" : e.target.textContent;
-        secondText.textContent = `${result}${operator}`;
+        secondText.textContent = `${result} ${operator}`;
         display.textContent = "";
         num2 = null;
         displayNum = null;
       } else {
         operator = e.target.textContent === "X" ? "*" : e.target.textContent;
-        secondText.textContent = `${num1}${operator}`;
+        secondText.textContent = `${num1} ${operator}`;
         display.textContent = "";
       }
     } else {
@@ -94,8 +99,14 @@ equals.addEventListener("click", () => {
       isPressed = false;
       num2 = displayNum;
       secondText.textContent = "";
-      display.textContent = operate(num1, num2, operator);
-      displayNum = operate(num1, num2, operator);
+      display.textContent =
+        operate(num1, num2, operator).toString().length < 12
+          ? operate(num1, num2, operator)
+          : operate(num1, num2, operator).toPrecision(12);
+      displayNum =
+        operate(num1, num2, operator).toString().length < 12
+          ? operate(num1, num2, operator)
+          : operate(num1, num2, operator).toPrecision(12);
       isClear = false;
       operator = "";
     }
